@@ -3,6 +3,9 @@ const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
+  './favicon.png',
+  './icon-192.png',
+  './icon-512.png',
   // External Libraries (CDNs)
   'https://unpkg.com/react@18/umd/react.production.min.js',
   'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js',
