@@ -30,6 +30,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 
@@ -60,6 +63,13 @@
             0%, 100% { box-shadow: 0 0 0 0px rgba(234, 179, 8, 0.4); }
             50% { box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.1); }
         }
+
+        /* Modal Animation */
+        @keyframes modal-pop {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .modal-content { animation: modal-pop 0.2s ease-out forwards; }
 
         /* --- DYNAMIC POSITIONING --- */
         #pdf-hidden-wrapper {
@@ -254,6 +264,45 @@
             return <i data-lucide={name} width={size} height={size} className={className}></i>;
         };
 
+        // --- CUSTOM MODAL COMPONENT ---
+        const NotificationModal = ({ isOpen, type, title, message, onConfirm, onClose }) => {
+            if (!isOpen) return null;
+
+            return (
+                <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 modal-content transform transition-all">
+                        <div className="flex flex-col items-center text-center">
+                            <div className={`p-3 rounded-full mb-4 ${type === 'alert' ? 'bg-blue-100 text-blue-600' : 'bg-yellow-100 text-yellow-600'}`}>
+                                <Icon name={type === 'alert' ? 'info' : 'help-circle'} size={32} />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-800 mb-2">{title}</h3>
+                            <p className="text-gray-600 mb-6 text-sm leading-relaxed">{message}</p>
+                            
+                            <div className="flex gap-3 w-full">
+                                {type === 'confirm' && (
+                                    <button 
+                                        onClick={onClose} 
+                                        className="flex-1 px-4 py-3 text-gray-600 font-bold bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors"
+                                    >
+                                        Hindi pa
+                                    </button>
+                                )}
+                                <button 
+                                    onClick={() => { 
+                                        if(onConfirm) onConfirm(); 
+                                        onClose(); 
+                                    }} 
+                                    className={`flex-1 px-4 py-3 text-white font-bold rounded-xl shadow-lg transition-transform active:scale-95 ${type === 'alert' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-green-600 hover:bg-green-700'}`}
+                                >
+                                    {type === 'confirm' ? 'Opo, Tapos na' : 'Okay'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
         // --- COMPONENTS ---
         const ValuesDeck = () => {
             const [expandedId, setExpandedId] = useState(null);
@@ -334,7 +383,7 @@
             );
         };
 
-        const Checklist = () => {
+        const Checklist = ({ showModal }) => {
             const [checks, setChecks] = useState({});
             const [streak, setStreak] = useState(0);
             const [lastCompletedDate, setLastCompletedDate] = useState(null);
@@ -350,18 +399,57 @@
 
             useEffect(() => { localStorage.setItem('bp_checks', JSON.stringify(checks)); }, [checks]);
 
-            const toggleCheck = (id) => setChecks(prev => ({ ...prev, [id]: !prev[id] }));
+            const toggleCheck = (id) => {
+                const isNowChecked = !checks[id];
+                setChecks(prev => ({ ...prev, [id]: isNowChecked }));
+                
+                // Only trigger confetti if we are CHECKING the item (not unchecking)
+                if (isNowChecked) {
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                        colors: ['#2563eb', '#f59e0b', '#10b981'],
+                        zIndex: 9999
+                    });
+                }
+            };
+
             const completedCount = Object.values(checks).filter(Boolean).length;
             const progress = (completedCount / CHECKLIST_ITEMS.length) * 100;
 
             const handleFinishDay = () => {
                 const today = new Date().toLocaleDateString();
-                if (lastCompletedDate === today) { alert("Natapos mo na ang araw na ito! Bukas naman ulit."); return; }
-                if (completedCount < CHECKLIST_ITEMS.length && !confirm("Hindi mo pa natatapos lahat. Gusto mo na bang tapusin ang araw?")) return;
                 
+                if (lastCompletedDate === today) { 
+                    showModal('alert', 'Tapos na!', 'Natapos mo na ang araw na ito. Bukas naman ulit para sa mas mataas na streak!');
+                    return; 
+                }
+
+                if (completedCount < CHECKLIST_ITEMS.length) {
+                    showModal('confirm', 'Hindi pa kumpleto', 'Hindi mo pa natatapos lahat. Gusto mo na bang tapusin ang araw?', () => {
+                        processFinishDay(today);
+                    });
+                } else {
+                    processFinishDay(today);
+                }
+            };
+
+            const processFinishDay = (today) => {
                 let newStreak = completedCount >= 6 ? streak + 1 : 0;
-                if (completedCount >= 6) alert(`Mahusay! Streak: ${newStreak} araw!`);
-                else alert("Subukan nating kumpletuhin bukas para tumaas ang streak!");
+                
+                if (completedCount >= 6) {
+                    // Big celebration for finishing the day
+                    confetti({
+                        particleCount: 200,
+                        spread: 100,
+                        origin: { y: 0.6 },
+                        colors: ['#2563eb', '#f59e0b', '#10b981']
+                    });
+                    showModal('alert', 'Mahusay!', `Natapos mo ang araw! Ang iyong streak ay ${newStreak} na araw!`);
+                } else {
+                    showModal('alert', 'Sayang!', 'Subukan nating kumpletuhin bukas para tumaas ang streak!');
+                }
 
                 setStreak(newStreak);
                 setLastCompletedDate(today);
@@ -382,7 +470,7 @@
                     <h3 className="font-bold text-gray-700 mb-3 px-1">Checklist Ngayong Araw:</h3>
                     <div className="space-y-3">
                         {CHECKLIST_ITEMS.map(item => (
-                            <div key={item.id} onClick={() => toggleCheck(item.id)} className={`flex items-center p-4 bg-white rounded-xl border border-gray-100 shadow-sm cursor-pointer transition-all ${checks[item.id] ? 'bg-green-50 border-green-200' : 'hover:bg-gray-50'}`}>
+                            <div key={item.id} onClick={() => toggleCheck(item.id)} className={`flex items-center p-4 bg-white rounded-xl border border-gray-100 shadow-sm cursor-pointer transition-all active:scale-[0.98] ${checks[item.id] ? 'bg-green-50 border-green-200' : 'hover:bg-gray-50'}`}>
                                 <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mr-3 transition-colors ${checks[item.id] ? 'bg-green-500 border-green-500' : 'border-gray-300'}`}>{checks[item.id] && <Icon name="check" size={14} className="text-white" />}</div>
                                 <span className={`text-sm flex-1 ${checks[item.id] ? 'text-green-800 font-medium line-through decoration-green-300' : 'text-gray-700'}`}>{item.text}</span>
                             </div>
@@ -393,7 +481,15 @@
             );
         };
 
-        const Contract = ({ childName, setChildName, parentName, setParentName, date, setDate, onPreview }) => {
+        const Contract = ({ childName, setChildName, parentName, setParentName, date, setDate, onPreview, showModal }) => {
+            const handlePreviewClick = () => {
+                if(!childName || !parentName) {
+                    showModal('alert', 'Kulang na Impormasyon', 'Pakilagay muna ang pangalan ng bata at magulang.');
+                    return;
+                }
+                onPreview();
+            };
+
             return (
                 <div className="pb-20 relative">
                     <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 text-center">
@@ -407,7 +503,7 @@
                             <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg" />
                         </div>
 
-                        <button onClick={onPreview} className="w-full mt-6 bg-blue-600 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors">
+                        <button onClick={handlePreviewClick} className="w-full mt-6 bg-blue-600 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors">
                             <Icon name="eye" size={20} /> Preview
                         </button>
                     </div>
@@ -422,14 +518,24 @@
             const [parentName, setParentName] = useState("");
             const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
             
+            // Modal State
+            const [modalConfig, setModalConfig] = useState({ isOpen: false, type: 'alert', title: '', message: '', onConfirm: null });
+
+            // Helper to show modal
+            const showModal = (type, title, message, onConfirm = null) => {
+                setModalConfig({ isOpen: true, type, title, message, onConfirm });
+            };
+
+            const closeModal = () => {
+                setModalConfig(prev => ({ ...prev, isOpen: false }));
+            };
+            
             // Preview Modal State
             const [showPreviewModal, setShowPreviewModal] = useState(false);
             const [previewUrl, setPreviewUrl] = useState(null);
             const [isGenerating, setIsGenerating] = useState(false);
 
             const handleGeneratePreview = async () => {
-                if(!childName || !parentName) { alert("Pakilagay muna ang mga pangalan."); return; }
-                
                 // 1. Start Generation: Show Loader (Curtain)
                 setIsGenerating(true);
 
@@ -452,7 +558,7 @@
                         });
                         setPreviewUrl(canvas.toDataURL('image/png'));
                         setShowPreviewModal(true);
-                    } catch (error) { console.error("Preview Error:", error); alert("Failed to generate preview."); }
+                    } catch (error) { console.error("Preview Error:", error); showModal('alert', 'Error', 'Failed to generate preview.'); }
                     finally { 
                         // 4. Finish: Loader (Curtain) will disappear because isGenerating becomes false
                         // The CSS class .generating will also be removed, sending contract back off-screen
@@ -468,7 +574,7 @@
                     const pdf = new jsPDF('p', 'mm', 'a4');
                     pdf.addImage(previewUrl, 'PNG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
                     pdf.save(`Kasunduan_ng_Pamilya.pdf`);
-                } catch (e) { alert("Error saving PDF."); }
+                } catch (e) { showModal('alert', 'Error', 'Error saving PDF.'); }
             };
 
             return (
@@ -482,8 +588,8 @@
 
                     <main className="flex-1 p-4 overflow-y-auto w-full max-w-md mx-auto">
                         {activeTab === 'home' && <ValuesDeck />}
-                        {activeTab === 'checklist' && <Checklist />}
-                        {activeTab === 'contract' && <Contract childName={childName} setChildName={setChildName} parentName={parentName} setParentName={setParentName} date={date} setDate={setDate} onPreview={handleGeneratePreview} />}
+                        {activeTab === 'checklist' && <Checklist showModal={showModal} />}
+                        {activeTab === 'contract' && <Contract childName={childName} setChildName={setChildName} parentName={parentName} setParentName={setParentName} date={date} setDate={setDate} onPreview={handleGeneratePreview} showModal={showModal} />}
                     </main>
 
                     <nav className="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around p-3 z-20 pb-safe">
@@ -491,6 +597,16 @@
                         <button onClick={() => setActiveTab('checklist')} className={`flex flex-col items-center gap-1 ${activeTab === 'checklist' ? 'text-blue-600' : 'text-gray-400'}`}><Icon name="check-circle" size={24} /><span className="text-[10px] font-bold">Tseklist</span></button>
                         <button onClick={() => setActiveTab('contract')} className={`flex flex-col items-center gap-1 ${activeTab === 'contract' ? 'text-blue-600' : 'text-gray-400'}`}><Icon name="pen-tool" size={24} /><span className="text-[10px] font-bold">Kasunduan</span></button>
                     </nav>
+
+                    {/* GLOBAL NOTIFICATION MODAL */}
+                    <NotificationModal 
+                        isOpen={modalConfig.isOpen}
+                        type={modalConfig.type}
+                        title={modalConfig.title}
+                        message={modalConfig.message}
+                        onConfirm={modalConfig.onConfirm}
+                        onClose={closeModal}
+                    />
 
                     {/* PREVIEW MODAL */}
                     {showPreviewModal && (
