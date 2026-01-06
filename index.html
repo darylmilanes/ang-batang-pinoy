@@ -529,7 +529,13 @@
                 <div className="space-y-4 pb-20">
                     <div className="bg-gradient-to-r from-orange-400 to-red-400 p-6 rounded-2xl shadow-lg text-white mb-6">
                         <h2 className="text-2xl font-bold">Kuwento ng Aral</h2>
-                        <p className="opacity-90 mt-1 text-sm">Matuto sa karanasan ng iba para hindi na maulit ang pagkakamali.</p>
+                        <div className="opacity-95 mt-3 text-sm leading-relaxed space-y-2">
+                            <p>Matuto sa karanasan ng iba para hindi na maulit ang pagkakamali.</p>
+                            <p className="font-medium bg-white/10 p-2 rounded-lg border border-white/20">
+                                <Icon name="alert-triangle" size={14} className="inline mr-1" />
+                                Tandaan: <strong>Nasa huli ang pagsisisi.</strong> Mas mabuting maging maingat at umiwas sa sakuna ngayon kaysa magsisi kapag huli na ang lahat. Kahit akala natin ay hindi ito mangyayari sa atin, posible pa rin ito kaya't mag-ingat tayo palagi.
+                            </p>
+                        </div>
                     </div>
 
                     {STORIES_DATA.map((story) => {
