@@ -257,11 +257,40 @@
         ];
 
         // --- ICONS ---
+        // Refactored to use createIcons inside a container to prevent conflicts
         const Icon = ({ name, size = 24, className = "" }) => {
+            const containerRef = useRef(null);
+
             useEffect(() => {
-                if (window.lucide) window.lucide.createIcons();
-            }, [name]);
-            return <i data-lucide={name} width={size} height={size} className={className}></i>;
+                if (containerRef.current && window.lucide) {
+                    // Clean up container
+                    containerRef.current.innerHTML = '';
+                    
+                    // Create the element Lucide expects
+                    const i = document.createElement('i');
+                    i.setAttribute('data-lucide', name);
+                    i.setAttribute('width', size);
+                    i.setAttribute('height', size);
+                    if (className) {
+                        i.setAttribute('class', className);
+                    }
+                    
+                    containerRef.current.appendChild(i);
+
+                    // Ask Lucide to replace it
+                    window.lucide.createIcons({
+                        root: containerRef.current,
+                        nameAttr: 'data-lucide',
+                        attrs: {
+                            width: size,
+                            height: size,
+                            class: className
+                        }
+                    });
+                }
+            }, [name, size, className]);
+
+            return <span ref={containerRef} style={{ display: 'inline-flex', alignItems: 'center' }} />;
         };
 
         // --- CUSTOM MODAL COMPONENT ---
