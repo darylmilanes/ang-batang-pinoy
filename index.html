@@ -46,10 +46,14 @@
             overscroll-behavior-y: none; /* Prevent pull-to-refresh on mobile */
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        /* Hide Scrollbar Globally */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        * {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
 
         /* Animation */
         @keyframes bounce-scale {
@@ -547,6 +551,19 @@
             const [parentName, setParentName] = useState("");
             const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
             
+            // Ref for the scrollable container
+            const mainContentRef = useRef(null);
+
+            // Effect to reset scroll position when tab changes
+            useEffect(() => {
+                // Reset the internal container scroll
+                if (mainContentRef.current) {
+                    mainContentRef.current.scrollTo(0, 0);
+                }
+                // Ensure window scroll is also reset (for some mobile browsers)
+                window.scrollTo(0, 0);
+            }, [activeTab]);
+            
             // Modal State
             const [modalConfig, setModalConfig] = useState({ isOpen: false, type: 'alert', title: '', message: '', onConfirm: null });
 
@@ -607,21 +624,24 @@
             };
 
             return (
-                <div id="app-root-container" className="flex flex-col min-h-screen">
-                    <header className="bg-white p-4 sticky top-0 z-10 shadow-sm flex items-center justify-between">
+                // FIX: Changed min-h-screen to h-screen and added overflow-hidden
+                // This forces the window to stay fixed, making <main> the only scrollable area.
+                <div id="app-root-container" className="flex flex-col h-screen overflow-hidden bg-gray-50">
+                    <header className="bg-white p-4 sticky top-0 z-10 shadow-sm flex items-center justify-between shrink-0">
                         <div className="flex items-center gap-3">
                             <img src="icon-192.png" alt="Logo" className="w-8 h-8 rounded-lg shadow-sm" />
                             <h1 className="font-bold text-gray-800 text-lg">Ang Batang Pinoy</h1>
                         </div>
                     </header>
 
-                    <main className="flex-1 p-4 overflow-y-auto w-full max-w-md mx-auto">
+                    {/* FIX: Added pb-24 to prevent content from hiding behind the bottom nav */}
+                    <main ref={mainContentRef} className="flex-1 p-4 pb-24 overflow-y-auto w-full max-w-md mx-auto overscroll-contain">
                         {activeTab === 'home' && <ValuesDeck />}
                         {activeTab === 'checklist' && <Checklist showModal={showModal} />}
                         {activeTab === 'contract' && <Contract childName={childName} setChildName={setChildName} parentName={parentName} setParentName={setParentName} date={date} setDate={setDate} onPreview={handleGeneratePreview} showModal={showModal} />}
                     </main>
 
-                    <nav className="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around p-3 z-20 pb-safe">
+                    <nav className="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around p-3 z-20 pb-safe shrink-0">
                         <button onClick={() => setActiveTab('home')} className={`flex flex-col items-center gap-1 ${activeTab === 'home' ? 'text-blue-600' : 'text-gray-400'}`}><Icon name="book-open" size={24} /><span className="text-[10px] font-bold">Gabay</span></button>
                         <button onClick={() => setActiveTab('checklist')} className={`flex flex-col items-center gap-1 ${activeTab === 'checklist' ? 'text-blue-600' : 'text-gray-400'}`}><Icon name="check-circle" size={24} /><span className="text-[10px] font-bold">Tseklist</span></button>
                         <button onClick={() => setActiveTab('contract')} className={`flex flex-col items-center gap-1 ${activeTab === 'contract' ? 'text-blue-600' : 'text-gray-400'}`}><Icon name="pen-tool" size={24} /><span className="text-[10px] font-bold">Kasunduan</span></button>
