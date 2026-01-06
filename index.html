@@ -130,7 +130,7 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // --- EXPANDED DATA ---
+        // --- EXPANDED DATA (Restored Full Content) ---
         const VALUES_DATA = [
             { 
                 id: 1, 
@@ -258,6 +258,103 @@
             { id: "c9", text: "Nagpasalamat ako sa mga biyayang natanggap ko (Gratitude).", points: 1 },
             { id: "c10", text: "Tinapos ko ang gawain kahit medyo mahirap (Perseverance).", points: 1 },
             { id: "c11", text: "Nagdasal at nagpasalamat ako sa Diyos (Godliness).", points: 1 }
+        ];
+
+        // --- STORIES DATA (ARAL TAB) ---
+        const STORIES_DATA = [
+            // Bad Case (Yellow)
+            {
+                id: "s1",
+                type: "bad",
+                theme: "Household Safety",
+                title: "Ang Basa sa Banyo",
+                story: "Nagmadaling maligo si Lito dahil nag-aabang na ang kalaro niya. Iniwan niyang basa ang sahig at puno ng sabon.",
+                effect: "Pumasok ang Lola niya, hindi napansin ang sabon, at nadulas. Sumakit ang balakang ni Lola ng ilang araw at hindi na nakalaro si Lito.",
+                prevention: "Laging banlawan at patuyuin ang sahig pagkatapos maligo.",
+                question: "Kung ikaw si Lito, ano ang dapat mong ginawa bago lumabas ng banyo?"
+            },
+            {
+                id: "s2",
+                type: "bad",
+                theme: "Planning & School",
+                title: "Ang Naiwan na Project",
+                story: "Excited si Roy sa field trip kaya hindi niya inayos ang gamit niya noong gabi. 'Bukas na lang,' sabi niya. Pagkagising, nagmamadali siya.",
+                effect: "Naiwan niya ang consent form at baon. Hindi siya pinasama sa bus. Umuwi siyang umiiyak habang ang mga kaklase ay nagsasaya.",
+                prevention: "Magplano at mag-ayos ng gamit bago matulog.",
+                question: "Naranasan mo na bang may makalimutan dahil nagmadali ka?"
+            },
+            {
+                id: "s3",
+                type: "bad",
+                theme: "Honesty",
+                title: "Ang Kodigo sa Palad",
+                story: "Hindi nag-aral si Ana. Nagsulat siya ng sagot sa kanyang palad para sa quiz.",
+                effect: "Nahuli siya ng guro. Pinatayo sa harap ng klase, binigyan ng zero, at ipinatawag ang magulang. Hiyang-hiya siya.",
+                prevention: "Mag-aral nang maaga. Mas mabuti pang mababa ang makuha basta tapat.",
+                question: "Bakit mas mahalaga ang pagiging tapat kaysa sa mataas na marka?"
+            },
+            // Worse Case (Orange)
+            {
+                id: "s4",
+                type: "worse",
+                theme: "Fire Safety",
+                title: "Ang Mainit na Charger",
+                story: "Nag-games si Ben habang naka-charge ang phone. Nakatulog siya at naiwan itong nakasaksak sa ilalim ng unan.",
+                effect: "Uminit ang battery at sumabog. Nasunog ang unan at kama ni Ben. Nasugatan ang kanyang mukha.",
+                prevention: "Huwag gamitin ang gadget habang naka-charge at huwag iwan sa kama.",
+                question: "Saan dapat ilagay ang cellphone kapag chinacharge?"
+            },
+            {
+                id: "s5",
+                type: "worse",
+                theme: "Gas Safety",
+                title: "Ang Bukas na Tangke",
+                story: "Nagluto si Nene pero nakalimutang isara ang valve ng gas tank (LPG) kasi tinawag siya ng kalaro.",
+                effect: "Sumingaw ang gas. Noong nagsindi ng kandila ang Tatay niya, sumiklab ang apoy. Muntik nang masunog ang kusina.",
+                prevention: "Laging siguraduhing sarado ang gas tank pagkatapos gamitin.",
+                question: "Ano ang gagawin mo kapag nakaamoy ka ng gas sa kusina?"
+            },
+            {
+                id: "s6",
+                type: "worse",
+                theme: "Road Safety",
+                title: "Ang Tumalsik na Bola",
+                story: "Nagbasketball sina Jose sa tabi ng kalsada. Tumalsik ang bola at hinabol ni Jose nang hindi tumitingin.",
+                effect: "Nahagip siya ng mabilis na tricycle. Nabali ang kanyang braso at hindi nakapaglaro ng anim na buwan.",
+                prevention: "Huwag maglaro sa kalsada. Huminto at tumingin bago tumawid.",
+                question: "Bakit delikado ang paghabol sa bola sa kalsada?"
+            },
+            // Worst Case (Red)
+            {
+                id: "s7",
+                type: "worst",
+                theme: "Drunk Driving",
+                title: "Ang Huling Inuman",
+                story: "Nakainom ang Tito ni Marie pero nagmaneho pa rin ng motor pauwi. Angkas niya ang kaibigan.",
+                effect: "Bumangga sila sa poste. Binawian ng buhay ang Tito niya at ang kaibigan ay hindi na makalakad.",
+                prevention: "Don't drink and drive. Huwag sumakay sa driver na nakainom.",
+                question: "Ano ang sasabihin mo sa kakilala mong gustong magmaneho nang lasing?"
+            },
+            {
+                id: "s8",
+                type: "worst",
+                theme: "Environmental",
+                title: "Ang Bara sa Kanal",
+                story: "Tinapon lang ng mga tao ang plastik sa kanal. 'Maliit lang naman ito,' isip nila.",
+                effect: "Bumagyo at bumaha nang mataas dahil barado ang kanal. Naanod ang bahay nila at nawala ang lahat ng gamit.",
+                prevention: "Itapon ang basura sa tamang basurahan.",
+                question: "Paano nakakaapekto ang maliit na basura sa malaking baha?"
+            },
+            {
+                id: "s9",
+                type: "worst",
+                theme: "Stranger Danger",
+                title: "Ang 'Kaibigan' sa Internet",
+                story: "Nakipagkita si Lyn sa kachat niyang hindi kakilala nang hindi nagpapaalam.",
+                effect: "Sindikato pala ito. Kinuha si Lyn at hindi na nakauwi sa kanilang pamilya.",
+                prevention: "Huwag makipagkita sa hindi kakilala. Laging ipaalam sa magulang.",
+                question: "Bakit hindi dapat magtiwala agad sa mga nakikilala sa internet?"
+            }
         ];
 
         // --- ICONS ---
@@ -416,6 +513,73 @@
             );
         };
 
+        // --- NEW COMPONENT: ARAL (STORIES) ---
+        const Aral = () => {
+            return (
+                <div className="space-y-4 pb-20">
+                    <div className="bg-gradient-to-r from-orange-400 to-red-400 p-6 rounded-2xl shadow-lg text-white mb-6">
+                        <h2 className="text-2xl font-bold">Kuwento ng Aral</h2>
+                        <p className="opacity-90 mt-1 text-sm">Matuto sa karanasan ng iba para hindi na maulit ang pagkakamali.</p>
+                    </div>
+
+                    {STORIES_DATA.map((story) => {
+                        let colorClass = "";
+                        let badgeText = "";
+                        let borderClass = "";
+
+                        if (story.type === 'bad') {
+                            colorClass = "bg-yellow-50";
+                            borderClass = "border-l-4 border-yellow-400";
+                            badgeText = "Maling Desisyon";
+                        } else if (story.type === 'worse') {
+                            colorClass = "bg-orange-50";
+                            borderClass = "border-l-4 border-orange-500";
+                            badgeText = "Malaking Pinsala";
+                        } else {
+                            colorClass = "bg-red-50";
+                            borderClass = "border-l-4 border-red-600";
+                            badgeText = "Trahedya";
+                        }
+
+                        return (
+                            <div key={story.id} className={`bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden ${borderClass}`}>
+                                <div className={`p-4 border-b border-gray-100 flex justify-between items-center ${colorClass}`}>
+                                    <h3 className="font-bold text-gray-800 text-lg">{story.title}</h3>
+                                    <span className={`text-[10px] uppercase font-bold px-2 py-1 rounded bg-white/50 border border-gray-200`}>{badgeText}</span>
+                                </div>
+                                <div className="p-5 text-sm space-y-4">
+                                    <div>
+                                        <div className="flex items-center gap-2 mb-1 text-gray-500 font-semibold text-xs uppercase tracking-wide">
+                                            <Icon name="book-open" size={14} /> Ang Nangyari
+                                        </div>
+                                        <p className="text-gray-700 leading-relaxed">{story.story}</p>
+                                    </div>
+                                    <div className="p-3 bg-red-50 rounded-lg border border-red-100">
+                                        <div className="flex items-center gap-2 mb-1 text-red-600 font-bold text-xs uppercase">
+                                            <Icon name="flame" size={14} /> Ang Epekto
+                                        </div>
+                                        <p className="text-gray-800">{story.effect}</p>
+                                    </div>
+                                    <div className="p-3 bg-green-50 rounded-lg border border-green-100">
+                                        <div className="flex items-center gap-2 mb-1 text-green-600 font-bold text-xs uppercase">
+                                            <Icon name="shield" size={14} /> Paano Iwasan
+                                        </div>
+                                        <p className="text-gray-800">{story.prevention}</p>
+                                    </div>
+                                    <div className="pt-2 border-t border-gray-100">
+                                        <p className="text-blue-600 italic text-xs font-medium flex gap-2 items-start">
+                                            <Icon name="help-circle" size={16} className="shrink-0" />
+                                            {story.question}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            );
+        };
+
         const Checklist = ({ showModal }) => {
             const [checks, setChecks] = useState({});
             const [streak, setStreak] = useState(0);
@@ -533,7 +697,7 @@
                         <div className="mt-6 space-y-4 text-left">
                             <input type="text" value={childName} onChange={(e) => setChildName(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg" placeholder="Pangalan ng Bata" />
                             <input type="text" value={parentName} onChange={(e) => setParentName(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg" placeholder="Pangalan ng Magulang" />
-                            {/* REMOVED DATE PICKER INPUT - Date is handled in state but not user-editable via picker */}
+                            {/* Removed Date Picker */}
                         </div>
 
                         <button onClick={handlePreviewClick} className="w-full mt-6 bg-blue-600 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors">
@@ -637,12 +801,14 @@
                     {/* FIX: Added pb-24 to prevent content from hiding behind the bottom nav */}
                     <main ref={mainContentRef} className="flex-1 p-4 pb-24 overflow-y-auto w-full max-w-md mx-auto overscroll-contain">
                         {activeTab === 'home' && <ValuesDeck />}
+                        {activeTab === 'aral' && <Aral />}
                         {activeTab === 'checklist' && <Checklist showModal={showModal} />}
                         {activeTab === 'contract' && <Contract childName={childName} setChildName={setChildName} parentName={parentName} setParentName={setParentName} date={date} setDate={setDate} onPreview={handleGeneratePreview} showModal={showModal} />}
                     </main>
 
                     <nav className="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around p-3 z-20 pb-safe shrink-0">
                         <button onClick={() => setActiveTab('home')} className={`flex flex-col items-center gap-1 ${activeTab === 'home' ? 'text-blue-600' : 'text-gray-400'}`}><Icon name="book-open" size={24} /><span className="text-[10px] font-bold">Gabay</span></button>
+                        <button onClick={() => setActiveTab('aral')} className={`flex flex-col items-center gap-1 ${activeTab === 'aral' ? 'text-blue-600' : 'text-gray-400'}`}><Icon name="book-open-check" size={24} /><span className="text-[10px] font-bold">Aral</span></button>
                         <button onClick={() => setActiveTab('checklist')} className={`flex flex-col items-center gap-1 ${activeTab === 'checklist' ? 'text-blue-600' : 'text-gray-400'}`}><Icon name="check-circle" size={24} /><span className="text-[10px] font-bold">Tseklist</span></button>
                         <button onClick={() => setActiveTab('contract')} className={`flex flex-col items-center gap-1 ${activeTab === 'contract' ? 'text-blue-600' : 'text-gray-400'}`}><Icon name="pen-tool" size={24} /><span className="text-[10px] font-bold">Kasunduan</span></button>
                     </nav>
@@ -702,7 +868,7 @@
                                     <p>Nauunawaan ko na ang mga sumusunod na pagpapahalaga (values) ay mahalaga para sa aking paglaki at kinabukasan:</p>
                                 </div>
                                 <div className="grid grid-cols-2 gap-8 mb-8 text-base w-full px-16">
-                                    <ul className="list-disc space-y-2"><li>Paggalang sa Nakatatanda</li><li>Pagpapahalaga sa Oras</li><li>Pananagutan sa Pagkakamali</li><li>Malasakit sa Kapwa</li><li>Pagkukusa sa Bahay</li><li>Pakikisama</li></ul>
+                                    <ul className="list-disc space-y-2"><li>Paggalang sa Nakatatanda</li><li>Pagpapahalaga sa Oras</li><li>Pananagutan sa Pagkakamali</li><li>Malasakit sa Kapwa</li><li>Pagkukusa sa Bahay</li><li>Pakikisama (Camaraderie)</li></ul>
                                     <ul className="list-disc space-y-2"><li>Pagiging Organisado</li><li>Pagpapakumbaba</li><li>Pasasalamat</li><li>Pagsisikap at Tiyaga</li><li>Pagiging Maka-Diyos</li></ul>
                                 </div>
                                 <div className="w-full mb-12 text-xl leading-relaxed text-justify px-8"><p>Kung ako ay magkakamali, handa akong tanggapin ang pagtutuwid ng aking mga magulang.</p></div>
@@ -721,16 +887,9 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
 
-        // --- SERVICE WORKER REGISTRATION ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(registration => {
-                        console.log('SW registered: ', registration);
-                    })
-                    .catch(registrationError => {
-                        console.log('SW registration failed: ', registrationError);
-                    });
+                navigator.serviceWorker.register('./service-worker.js').then(reg => console.log('SW reg:', reg)).catch(err => console.log('SW fail:', err));
             });
         }
     </script>
