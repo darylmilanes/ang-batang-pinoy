@@ -130,7 +130,7 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // --- EXPANDED DATA (Restored Full Content) ---
+        // --- DATA SECTION ---
         const VALUES_DATA = [
             { 
                 id: 1, 
@@ -360,7 +360,7 @@
                 type: "worst",
                 theme: "Home Safety",
                 title: "Ang Bukas na Pinto",
-                story: "Nakalimutan ni Mang Noli na i-lock ang pinto bago matulog dahil sa antok. 'Wala namang magnanakaw dito,' isip niya.",
+                story: "Nakalimutan ni Mang Noli na i-lock ang pinto bago matulog dahil sa antok. 'Wala namang magnanakaw dito,' isip nila.",
                 effect: "Habang tulog sila, pumasok ang mga kawatan. Tinangay ang kanilang gamit at pera. Labis ang takot na naramdaman ng pamilya.",
                 prevention: "Siguraduhing naka-lock ang lahat ng pinto at bintana bago matulog o umalis.",
                 question: "Bakit mahalagang i-check ang mga lock ng pinto bago matulog?"
@@ -446,7 +446,22 @@
         // --- COMPONENTS ---
         const ValuesDeck = () => {
             const [expandedId, setExpandedId] = useState(null);
-            const toggleCard = (id) => setExpandedId(expandedId === id ? null : id);
+            
+            const toggleCard = (id) => {
+                setExpandedId(expandedId === id ? null : id);
+            };
+
+            // SCROLL EFFECT FOR GABAY
+            useEffect(() => {
+                if (expandedId) {
+                    setTimeout(() => {
+                        const element = document.getElementById(`gabay-card-${expandedId}`);
+                        if (element) {
+                            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }, 150); // Reduced wait time for smoother transition
+                }
+            }, [expandedId]);
 
             return (
                 <div className="space-y-4 pb-20">
@@ -457,15 +472,20 @@
                     {VALUES_DATA.map((val) => {
                         const isSpecial = val.special;
                         const cardClasses = isSpecial 
-                            ? `bg-white rounded-xl overflow-hidden transition-all duration-300 border-2 border-amber-300 shadow-[0_0_15px_rgba(251,191,36,0.2)] ${expandedId === val.id ? 'ring-2 ring-amber-400 scale-[1.02]' : ''}`
-                            : `bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 ${expandedId === val.id ? 'ring-2 ring-blue-400 shadow-md' : ''}`;
+                            ? `bg-white rounded-xl overflow-hidden transition-all duration-300 border-2 border-amber-300 shadow-[0_0_15px_rgba(251,191,36,0.2)] scroll-mt-24`
+                            : `bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 scroll-mt-24`;
 
                         const headerClasses = isSpecial
                             ? "bg-gradient-to-r from-amber-100 to-yellow-100"
                             : "";
 
                         return (
-                            <div key={val.id} onClick={() => toggleCard(val.id)} className={cardClasses}>
+                            <div 
+                                key={val.id} 
+                                id={`gabay-card-${val.id}`} // Unique ID for scroll target
+                                onClick={() => toggleCard(val.id)} 
+                                className={cardClasses}
+                            >
                                 <div className={`flex items-center p-4 cursor-pointer ${headerClasses}`}>
                                     <div className={`p-3 rounded-full mr-4 ${val.color} ${isSpecial ? 'shadow-inner ring-2 ring-amber-200' : ''}`}>
                                         <Icon name={val.icon} size={24} className={isSpecial ? "text-amber-600 fill-amber-100" : ""} />
@@ -525,6 +545,24 @@
 
         // --- NEW COMPONENT: ARAL (STORIES) ---
         const Aral = () => {
+            const [expandedStoryId, setExpandedStoryId] = useState(null);
+
+            const toggleStory = (id) => {
+                setExpandedStoryId(expandedStoryId === id ? null : id);
+            };
+
+            // SCROLL EFFECT FOR ARAL
+            useEffect(() => {
+                if (expandedStoryId) {
+                    setTimeout(() => {
+                        const element = document.getElementById(`aral-card-${expandedStoryId}`);
+                        if (element) {
+                            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }, 150); // Reduced wait time
+                }
+            }, [expandedStoryId]);
+
             return (
                 <div className="space-y-4 pb-20">
                     <div className="bg-gradient-to-r from-orange-400 to-red-400 p-6 rounded-2xl shadow-lg text-white mb-6">
@@ -557,38 +595,56 @@
                             badgeText = "Trahedya";
                         }
 
+                        const isExpanded = expandedStoryId === story.id;
+
                         return (
-                            <div key={story.id} className={`bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden ${borderClass}`}>
+                            <div 
+                                key={story.id} 
+                                id={`aral-card-${story.id}`} // Unique ID for scroll target
+                                onClick={() => toggleStory(story.id)}
+                                className={`bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden ${borderClass} scroll-mt-24 cursor-pointer transition-all duration-300`}
+                            >
                                 <div className={`p-4 border-b border-gray-100 flex justify-between items-center ${colorClass}`}>
-                                    <h3 className="font-bold text-gray-800 text-lg">{story.title}</h3>
-                                    <span className={`text-[10px] uppercase font-bold px-2 py-1 rounded bg-white/50 border border-gray-200`}>{badgeText}</span>
-                                </div>
-                                <div className="p-5 text-sm space-y-4">
-                                    <div>
-                                        <div className="flex items-center gap-2 mb-1 text-gray-500 font-semibold text-xs uppercase tracking-wide">
-                                            <Icon name="book-open" size={14} /> Ang Nangyari
-                                        </div>
-                                        <p className="text-gray-700 leading-relaxed">{story.story}</p>
+                                    <div className="flex items-center gap-3">
+                                        <h3 className="font-bold text-gray-800 text-lg">{story.title}</h3>
                                     </div>
-                                    <div className="p-3 bg-red-50 rounded-lg border border-red-100">
-                                        <div className="flex items-center gap-2 mb-1 text-red-600 font-bold text-xs uppercase">
-                                            <Icon name="flame" size={14} /> Ang Epekto
-                                        </div>
-                                        <p className="text-gray-800">{story.effect}</p>
-                                    </div>
-                                    <div className="p-3 bg-green-50 rounded-lg border border-green-100">
-                                        <div className="flex items-center gap-2 mb-1 text-green-600 font-bold text-xs uppercase">
-                                            <Icon name="shield" size={14} /> Paano Iwasan
-                                        </div>
-                                        <p className="text-gray-800">{story.prevention}</p>
-                                    </div>
-                                    <div className="pt-2 border-t border-gray-100">
-                                        <p className="text-blue-600 italic text-xs font-medium flex gap-2 items-start">
-                                            <Icon name="help-circle" size={16} className="shrink-0" />
-                                            {story.question}
-                                        </p>
+                                    <div className="flex items-center gap-2">
+                                        <span className={`text-[10px] uppercase font-bold px-2 py-1 rounded bg-white/50 border border-gray-200 hidden sm:inline-block`}>{badgeText}</span>
+                                        <Icon name={isExpanded ? "chevron-up" : "chevron-down"} size={20} className="text-gray-500" />
                                     </div>
                                 </div>
+                                
+                                {isExpanded && (
+                                    <div className="p-5 text-sm space-y-4 bg-white animate-fade-in">
+                                        <div className="sm:hidden mb-2">
+                                             <span className={`text-[10px] uppercase font-bold px-2 py-1 rounded bg-gray-100 border border-gray-200`}>{badgeText}</span>
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center gap-2 mb-1 text-gray-500 font-semibold text-xs uppercase tracking-wide">
+                                                <Icon name="book-open" size={14} /> Ang Nangyari
+                                            </div>
+                                            <p className="text-gray-700 leading-relaxed">{story.story}</p>
+                                        </div>
+                                        <div className="p-3 bg-red-50 rounded-lg border border-red-100">
+                                            <div className="flex items-center gap-2 mb-1 text-red-600 font-bold text-xs uppercase">
+                                                <Icon name="flame" size={14} /> Ang Epekto
+                                            </div>
+                                            <p className="text-gray-800">{story.effect}</p>
+                                        </div>
+                                        <div className="p-3 bg-green-50 rounded-lg border border-green-100">
+                                            <div className="flex items-center gap-2 mb-1 text-green-600 font-bold text-xs uppercase">
+                                                <Icon name="shield" size={14} /> Paano Iwasan
+                                            </div>
+                                            <p className="text-gray-800">{story.prevention}</p>
+                                        </div>
+                                        <div className="pt-2 border-t border-gray-100">
+                                            <p className="text-blue-600 italic text-xs font-medium flex gap-2 items-start">
+                                                <Icon name="help-circle" size={16} className="shrink-0" />
+                                                {story.question}
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         );
                     })}
@@ -815,7 +871,7 @@
                     </header>
 
                     {/* FIX: Added pb-24 to prevent content from hiding behind the bottom nav */}
-                    <main ref={mainContentRef} className="flex-1 p-4 pb-24 overflow-y-auto w-full max-w-md mx-auto overscroll-contain">
+                    <main ref={mainContentRef} className="flex-1 p-4 pb-24 overflow-y-auto w-full max-w-md mx-auto overscroll-contain scroll-smooth">
                         {activeTab === 'home' && <ValuesDeck />}
                         {activeTab === 'aral' && <Aral />}
                         {activeTab === 'checklist' && <Checklist showModal={showModal} />}
@@ -903,9 +959,16 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
 
+        // --- SERVICE WORKER REGISTRATION ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js').then(reg => console.log('SW reg:', reg)).catch(err => console.log('SW fail:', err));
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
             });
         }
     </script>
