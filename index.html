@@ -533,7 +533,7 @@
                         <div className="mt-6 space-y-4 text-left">
                             <input type="text" value={childName} onChange={(e) => setChildName(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg" placeholder="Pangalan ng Bata" />
                             <input type="text" value={parentName} onChange={(e) => setParentName(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg" placeholder="Pangalan ng Magulang" />
-                            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg" />
+                            {/* REMOVED DATE PICKER INPUT - Date is handled in state but not user-editable via picker */}
                         </div>
 
                         <button onClick={handlePreviewClick} className="w-full mt-6 bg-blue-600 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors">
